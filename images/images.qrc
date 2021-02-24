@@ -1,0 +1,43 @@
+<RCC>
+    <qresource prefix="/images">
+        <file>units/angel.png</file>
+        <file>units/archer.png</file>
+        <file>units/axemaster.png</file>
+        <file>units/bone_dragon.png</file>
+        <file>units/green_dragon.png</file>
+        <file>units/lich.png</file>
+        <file>units/monk.png</file>
+        <file>units/pegas.png</file>
+        <file>units/runemaster.png</file>
+        <file>units/shieldman.png</file>
+        <file>units/skeleton.png</file>
+        <file>units/sniper.png</file>
+        <file>units/swordsman.png</file>
+        <file>units/vampire.png</file>
+        <file>units/wisp.png</file>
+        <file>tiles/grass.png</file>
+        <file>tiles/water.png</file>
+        <file>tiles/unknown.png</file>
+        <file>tiles/lava.png</file>
+        <file>tiles/dirt.png</file>
+        <file>tiles/snow.png</file>
+        <file>resources/wood.png</file>
+        <file>resources/stone.png</file>
+        <file>resources/gold.png</file>
+        <file>resources/gem.png</file>
+        <file>towns/undead.png</file>
+        <file>towns/dwarf.png</file>
+        <file>towns/elf.png</file>
+        <file>towns/human.png</file>
+        <file>heroes/arthur.png</file>
+        <file>heroes/cathrine.png</file>
+        <file>heroes/galadriel.png</file>
+        <file>heroes/gildor.png</file>
+        <file>heroes/mortis.png</file>
+        <file>heroes/sandro.png</file>
+        <file>heroes/sturmir.png</file>
+        <file>heroes/wotan.png</file>
+        <file>units/axethrower.png</file>
+        <file>cursor/normal.png</file>
+    </qresource>
+</RCC>

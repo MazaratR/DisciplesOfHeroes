@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>BattleQueue</class>
+ <widget class="QWidget" name="BattleQueue">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1070</width>
+    <height>198</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">background-color: rgb(15, 15, 15);
+font: 14pt &quot;Ancient Modern Tales&quot;;
+color: rgb(230, 230, 230);</string>
+  </property>
+  <layout class="QHBoxLayout" name="horizontalLayout">
+   <property name="spacing">
+    <number>0</number>
+   </property>
+   <property name="leftMargin">
+    <number>0</number>
+   </property>
+   <property name="topMargin">
+    <number>0</number>
+   </property>
+   <property name="rightMargin">
+    <number>0</number>
+   </property>
+   <property name="bottomMargin">
+    <number>0</number>
+   </property>
+   <item>
+    <widget class="UnitLayout" name="wgt_unitInQueue_1" native="true"/>
+   </item>
+   <item>
+    <widget class="UnitLayout" name="wgt_unitInQueue_2" native="true"/>
+   </item>
+   <item>
+    <widget class="UnitLayout" name="wgt_unitInQueue_3" native="true"/>
+   </item>
+   <item>
+    <widget class="UnitLayout" name="wgt_unitInQueue_4" native="true"/>
+   </item>
+   <item>
+    <widget class="UnitLayout" name="wgt_unitInQueue_5" native="true"/>
+   </item>
+   <item>
+    <widget class="UnitLayout" name="wgt_unitInQueue_6" native="true"/>
+   </item>
+   <item>
+    <widget class="UnitLayout" name="wgt_unitInQueue_7" native="true"/>
+   </item>
+   <item>
+    <widget class="UnitLayout" name="wgt_unitInQueue_8" native="true"/>
+   </item>
+  </layout>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>UnitLayout</class>
+   <extends>QWidget</extends>
+   <header>ui/unit_layout.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections/>
+</ui>
