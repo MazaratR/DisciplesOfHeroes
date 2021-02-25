@@ -38,21 +38,21 @@
 
 UserInterface::UserInterface(std::shared_ptr<IMapManager> _manager)
     : QMainWindow(nullptr)
-    , ui(new Ui::UserInterface)
+    , m_ui(std::make_shared<Ui::UserInterface>())
     , m_mapManager(_manager)
 {
-    ui->setupUi(this);
-    ui->mainStack->setFocusPolicy(Qt::NoFocus);
-    ui->pb_hero_1->setFocusPolicy(Qt::NoFocus);
-    ui->pb_hero_2->setFocusPolicy(Qt::NoFocus);
-    ui->pb_nextTurn->setFocusPolicy(Qt::NoFocus);
-    ui->wgt_resources->setFocusPolicy(Qt::NoFocus);
+    m_ui->setupUi(this);
+    m_ui->mainStack->setFocusPolicy(Qt::NoFocus);
+    m_ui->pb_hero_1->setFocusPolicy(Qt::NoFocus);
+    m_ui->pb_hero_2->setFocusPolicy(Qt::NoFocus);
+    m_ui->pb_nextTurn->setFocusPolicy(Qt::NoFocus);
+    m_ui->wgt_resources->setFocusPolicy(Qt::NoFocus);
 
     m_playerSettingsVec = {
-        ui->wgt_player1,
-        ui->wgt_player2,
-        ui->wgt_player3,
-        ui->wgt_player4,
+        m_ui->wgt_player1,
+        m_ui->wgt_player2,
+        m_ui->wgt_player3,
+        m_ui->wgt_player4,
     };
 
     QDir mapsDir(Path::getInstance().getPathToMaps().c_str());
@@ -60,16 +60,16 @@ UserInterface::UserInterface(std::shared_ptr<IMapManager> _manager)
 
     for (const auto& mapName : mapNames)
     {
-        ui->cb_map->addItem(mapName);
+        m_ui->cb_map->addItem(mapName);
     }
 
-    m_globalMap = QPixmap(ui->wgt_globalMap->size());
-    ui->wgt_globalMap->setPixmapToDraw(&m_globalMap);
+    m_globalMap = QPixmap(m_ui->wgt_globalMap->size());
+    m_ui->wgt_globalMap->setPixmapToDraw(&m_globalMap);
 
     installEventFilter(this);
-    ui->wgt_globalMap->installEventFilter(this);
-    ui->wgt_globalMap->setMouseTracking(true);
-    ui->wgt_globalMap->setGeometry(0,0,800,600);
+    m_ui->wgt_globalMap->installEventFilter(this);
+    m_ui->wgt_globalMap->setMouseTracking(true);
+    m_ui->wgt_globalMap->setGeometry(0,0,800,600);
 
     initTerrainTilesImages();
     initResourcesImages();
@@ -77,36 +77,31 @@ UserInterface::UserInterface(std::shared_ptr<IMapManager> _manager)
     initTownsImages();
     initUnitImages();
 
-    ui->wgt_armyLayout->setTitle("Army");
-    ui->wgt_armyLayout->setUnitsPixmap(&m_unitPixmaps);
-    ui->wgt_battlefield->setUnitsPixmap(&m_unitPixmaps);
-    ui->wgt_townView->setUnitsPixmap(&m_unitPixmaps);
+    m_ui->wgt_armyLayout->setTitle("Army");
+    m_ui->wgt_armyLayout->setUnitsPixmap(&m_unitPixmaps);
+    m_ui->wgt_battlefield->setUnitsPixmap(&m_unitPixmaps);
+    m_ui->wgt_townView->setUnitsPixmap(&m_unitPixmaps);
 
-    connect(ui->wgt_battlefield, &Battlefield::surrender,         this, &UserInterface::onSurrender);
-    connect(ui->wgt_battlefield, &Battlefield::skipMove,          this, &UserInterface::onSkipMove);
-    connect(ui->wgt_battlefield, &Battlefield::attackUnitOnRight, this, &UserInterface::onAttackUnitOnRight);
-    connect(ui->wgt_battlefield, &Battlefield::attackUnitOnLeft,  this, &UserInterface::onAttackUnitOnLeft);
-    connect(ui->wgt_battlefield, &Battlefield::showUnitInfo,      this, &UserInterface::onShowUnitInfo);
-    connect(ui->wgt_battlefield, &Battlefield::stopShowUnitInfo,  this, &UserInterface::stopShowUnitInfo);
+    connect(m_ui->wgt_battlefield, &Battlefield::surrender,         this, &UserInterface::onSurrender);
+    connect(m_ui->wgt_battlefield, &Battlefield::skipMove,          this, &UserInterface::onSkipMove);
+    connect(m_ui->wgt_battlefield, &Battlefield::attackUnitOnRight, this, &UserInterface::onAttackUnitOnRight);
+    connect(m_ui->wgt_battlefield, &Battlefield::attackUnitOnLeft,  this, &UserInterface::onAttackUnitOnLeft);
+    connect(m_ui->wgt_battlefield, &Battlefield::showUnitInfo,      this, &UserInterface::onShowUnitInfo);
+    connect(m_ui->wgt_battlefield, &Battlefield::stopShowUnitInfo,  this, &UserInterface::stopShowUnitInfo);
 
-    connect(ui->wgt_townView, &TownView::exitFromTown,            this, &UserInterface::onExitTown);
-    connect(ui->wgt_townView, &TownView::heroStayAsGarrison,      this, &UserInterface::onHeroStayAsGarrison);
-    connect(ui->wgt_townView, &TownView::hireUnitInTown,          this, &UserInterface::onHireUnitInTown);
-    connect(ui->wgt_townView, &TownView::hireUnitInTown,          this, &UserInterface::onHireUnitInTown);
-    connect(ui->wgt_townView, &TownView::swapUnits,               this, &UserInterface::onSwapUnits);
-    connect(ui->wgt_townView, &TownView::showUnitInfo,            this, &UserInterface::onShowUnitInfo);
-    connect(ui->wgt_townView, &TownView::stopShowUnitInfo,        this, &UserInterface::stopShowUnitInfo);
+    connect(m_ui->wgt_townView, &TownView::exitFromTown,            this, &UserInterface::onExitTown);
+    connect(m_ui->wgt_townView, &TownView::heroStayAsGarrison,      this, &UserInterface::onHeroStayAsGarrison);
+    connect(m_ui->wgt_townView, &TownView::hireUnitInTown,          this, &UserInterface::onHireUnitInTown);
+    connect(m_ui->wgt_townView, &TownView::hireUnitInTown,          this, &UserInterface::onHireUnitInTown);
+    connect(m_ui->wgt_townView, &TownView::swapUnits,               this, &UserInterface::onSwapUnits);
+    connect(m_ui->wgt_townView, &TownView::showUnitInfo,            this, &UserInterface::onShowUnitInfo);
+    connect(m_ui->wgt_townView, &TownView::stopShowUnitInfo,        this, &UserInterface::stopShowUnitInfo);
 
-    connect(ui->wgt_armyLayout, &ArmyLayout::swapUnits,           this, &UserInterface::onSwapUnits);
-    connect(ui->wgt_armyLayout, &ArmyLayout::showUnitInfo,        this, &UserInterface::onShowUnitInfo);
-    connect(ui->wgt_armyLayout, &ArmyLayout::stopShowUnitInfo,    this, &UserInterface::stopShowUnitInfo);
+    connect(m_ui->wgt_armyLayout, &ArmyLayout::swapUnits,           this, &UserInterface::onSwapUnits);
+    connect(m_ui->wgt_armyLayout, &ArmyLayout::showUnitInfo,        this, &UserInterface::onShowUnitInfo);
+    connect(m_ui->wgt_armyLayout, &ArmyLayout::stopShowUnitInfo,    this, &UserInterface::stopShowUnitInfo);
 
 //    QCoreApplication::instance()->installEventFilter(this);
-}
-
-UserInterface::~UserInterface()
-{
-    delete ui;
 }
 
 void UserInterface::resizeEvent(QResizeEvent *_event)
@@ -120,12 +115,12 @@ void UserInterface::resizeEvent(QResizeEvent *_event)
     // UI width
     int newInterfaceWidth = fullScreenRect.width() * 0.2;
     newInterfaceWidth = std::max(newInterfaceWidth, 250);
-    ui->gb_gameInterface->setMinimumWidth(newInterfaceWidth);
+    m_ui->gb_gameInterface->setMinimumWidth(newInterfaceWidth);
 
     // Main canvas size
     int gameScreenNewWidth = fullScreenRect.width() - newInterfaceWidth;
     fullScreenRect.setWidth(gameScreenNewWidth);
-    ui->wgt_globalMap->setGeometry(fullScreenRect);
+    m_ui->wgt_globalMap->setGeometry(fullScreenRect);
 
     gridMaker.setSizeInPixels(fullScreenRect.width(), fullScreenRect.height());
     m_globalMap = m_globalMap.scaled(fullScreenRect.width(), fullScreenRect.height());
@@ -133,11 +128,11 @@ void UserInterface::resizeEvent(QResizeEvent *_event)
 
 bool UserInterface::eventFilter(QObject *_object, QEvent *_event)
 {
-    if (_object == ui->wgt_globalMap)
+    if (_object == m_ui->wgt_globalMap)
     {
         if (_event->type() == QEvent::MouseButtonPress)
         {
-            auto cursorPos = ui->wgt_globalMap->mapFromGlobal(QCursor::pos());
+            auto cursorPos = m_ui->wgt_globalMap->mapFromGlobal(QCursor::pos());
             auto mouseEvent = dynamic_cast<QMouseEvent*>(_event);
             if (mouseEvent && mouseEvent->button() == Qt::LeftButton)
             {
@@ -172,7 +167,7 @@ bool UserInterface::eventFilter(QObject *_object, QEvent *_event)
 
 void UserInterface::keyPressEvent(QKeyEvent *_keyevent)
 {
-    if (ui->mainStack->currentWidget() != ui->page_globalMap)
+    if (m_ui->mainStack->currentWidget() != m_ui->page_globalMap)
         return;
 
     /// \!warning Only for ENG keyboard
@@ -199,26 +194,26 @@ void UserInterface::setPlayersManager(std::shared_ptr<IPlayersManager> _manager)
 
 void UserInterface::render()
 {
-    if (ui->mainStack->currentWidget() == ui->page_globalMap)
+    if (m_ui->mainStack->currentWidget() == m_ui->page_globalMap)
     {
         renderUi();
         prepareDataForRenderGlobalMap();
     }
-    else if (ui->mainStack->currentWidget() == ui->page_battlefield)
+    else if (m_ui->mainStack->currentWidget() == m_ui->page_battlefield)
         renderBattlefield();
-    else if (ui->mainStack->currentWidget() == ui->page_townView)
+    else if (m_ui->mainStack->currentWidget() == m_ui->page_townView)
         renderTownView();
 }
 
 void UserInterface::battleBegin(IHeroShared& _attacker, IHeroShared& _defender)
 {
-    ui->wgt_battlefield->setParticipants(_attacker, _defender);
-    ui->mainStack->setCurrentWidget(ui->page_battlefield);
+    m_ui->wgt_battlefield->setParticipants(_attacker, _defender);
+    m_ui->mainStack->setCurrentWidget(m_ui->page_battlefield);
 }
 
 void UserInterface::battleEnd(const BattleResult &_result)
 {
-    ui->mainStack->setCurrentWidget(ui->page_globalMap);
+    m_ui->mainStack->setCurrentWidget(m_ui->page_globalMap);
 
     m_battleResultView = std::make_shared<BattleResultView>(this, _result, &m_unitPixmaps);
     connect(m_battleResultView.get(), &BattleResultView::close,
@@ -229,11 +224,11 @@ void UserInterface::battleEnd(const BattleResult &_result)
 
 void UserInterface::arrivalAtTown(ITownShared &_town, IHeroShared &_hero)
 {
-    ui->wgt_townView->setDisplayedTown(_town);
-    ui->wgt_townView->setArrivedHero(_hero);
-    ui->wgt_townView->resetUi();
+    m_ui->wgt_townView->setDisplayedTown(_town);
+    m_ui->wgt_townView->setArrivedHero(_hero);
+    m_ui->wgt_townView->resetUi();
 
-    ui->mainStack->setCurrentWidget(ui->page_townView);
+    m_ui->mainStack->setCurrentWidget(m_ui->page_townView);
 }
 
 void UserInterface::onNewWeek()
@@ -360,8 +355,8 @@ void UserInterface::renderUi()
 
 void UserInterface::renderHeroesUi()
 {
-    static std::vector<QPushButton*> iconsVec = {ui->pb_hero_1,
-                                                 ui->pb_hero_2};
+    static std::vector<QPushButton*> iconsVec = {m_ui->pb_hero_1,
+                                                 m_ui->pb_hero_2};
     auto player = m_gameLogic->getCurrentPlayer();
 
     if (!player)
@@ -401,7 +396,7 @@ void UserInterface::renderTownsUi()
 void UserInterface::renderArmyUi()
 {
     IHeroSharedConst hero = m_gameLogic->getSelectedHero();
-    ui->wgt_armyLayout->setRenderData(hero);
+    m_ui->wgt_armyLayout->setRenderData(hero);
 }
 
 void UserInterface::renderResourcesUi()
@@ -414,7 +409,7 @@ void UserInterface::renderResourcesUi()
     if (player->isHumanControl())
     {
         const auto& resourcesMap = player->getResourceMap();
-        ui->wgt_resources->updateResourceAmount(resourcesMap);
+        m_ui->wgt_resources->updateResourceAmount(resourcesMap);
     }
 }
 
@@ -428,12 +423,12 @@ void UserInterface::renderCalendar()
     QString dateStr = "Day:" + QString::number(day) + "   Week: " + QString::number(week) +
                       "   Month: " + QString::number(month);
 
-    ui->lbl_date->setText(dateStr);
+    m_ui->lbl_date->setText(dateStr);
 }
 
 void UserInterface::prepareDataForRenderGlobalMap()
 {
-    if (ui->mainStack->currentWidget() != ui->page_globalMap)
+    if (m_ui->mainStack->currentWidget() != m_ui->page_globalMap)
         return;
 
     m_globalMap = QPixmap(m_globalMap.width(), m_globalMap.height());
@@ -441,7 +436,7 @@ void UserInterface::prepareDataForRenderGlobalMap()
     paintTerrainAndInteractObjects();
     paintObjectsHighlight();
 
-    ui->wgt_globalMap->update();
+    m_ui->wgt_globalMap->update();
 }
 
 void UserInterface::paintTerrainAndInteractObjects()
@@ -588,7 +583,7 @@ void UserInterface::renderBattlefield()
         timer.start();
 
     if (timer.elapsed() >= updatePeriod_ms)
-        ui->wgt_battlefield->setRenderData(m_gameLogic->getBattleQueueVec());
+        m_ui->wgt_battlefield->setRenderData(m_gameLogic->getBattleQueueVec());
 }
 
 void UserInterface::renderTownView()
@@ -599,7 +594,7 @@ void UserInterface::renderTownView()
         timer.start();
 
     if (timer.elapsed() >= updatePeriod_ms)
-        ui->wgt_townView->renderView();
+        m_ui->wgt_townView->renderView();
 }
 
 QString UserInterface::extractHeroHame(const QString& _text)
@@ -652,7 +647,7 @@ void UserInterface::on_pb_startGame_clicked()
         return;
 
     // Must go fist, so we can get info about heroes on the map
-    m_gameLogic->onMapSelected(ui->cb_map->currentText().toStdString());
+    m_gameLogic->onMapSelected(m_ui->cb_map->currentText().toStdString());
 
     for (unsigned i = 0 ; i < m_playersCount; i++)
     {
@@ -664,18 +659,18 @@ void UserInterface::on_pb_startGame_clicked()
 
     m_gameLogic->onStartGame();
 
-    ui->mainStack->setCurrentWidget(ui->page_globalMap);
+    m_ui->mainStack->setCurrentWidget(m_ui->page_globalMap);
 }
 
 void UserInterface::on_pb_hero_1_clicked()
 {
-    auto name = extractHeroHame(ui->pb_hero_1->text());
+    auto name = extractHeroHame(m_ui->pb_hero_1->text());
     m_gameLogic->onHeroSelected(name.toStdString());
 }
 
 void UserInterface::on_pb_hero_2_clicked()
 {
-    auto name = extractHeroHame(ui->pb_hero_2->text());
+    auto name = extractHeroHame(m_ui->pb_hero_2->text());
     m_gameLogic->onHeroSelected(name.toStdString());
 }
 
@@ -697,13 +692,13 @@ void UserInterface::onSkipMove()
 void UserInterface::onAttackUnitOnRight(UnitPosition _pos)
 {
     auto result = m_gameLogic->processAttack(_pos, false);
-    ui->wgt_battlefield->renderAttackResult(result);
+    m_ui->wgt_battlefield->renderAttackResult(result);
 }
 
 void UserInterface::onAttackUnitOnLeft(UnitPosition _pos)
 {
     auto result = m_gameLogic->processAttack(_pos, true);
-    ui->wgt_battlefield->renderAttackResult(result);
+    m_ui->wgt_battlefield->renderAttackResult(result);
 }
 
 void UserInterface::onShowUnitInfo(IUnitSharedConst _unit, int _x, int _y)
@@ -743,13 +738,13 @@ void UserInterface::onNotificationViewClose()
 
 void UserInterface::onExitTown()
 {
-    ui->mainStack->setCurrentWidget(ui->page_globalMap);
+    m_ui->mainStack->setCurrentWidget(m_ui->page_globalMap);
 }
 
 void UserInterface::onHeroStayAsGarrison(ITownShared _town, IHeroShared _hero)
 {
     m_gameLogic->setHeroAsGarrison(_town, _hero);
-    ui->mainStack->setCurrentWidget(ui->page_globalMap);
+    m_ui->mainStack->setCurrentWidget(m_ui->page_globalMap);
 }
 
 void UserInterface::onHireUnitInTown(ITownShared _town, IHeroShared _hero, UnitLevel _level, int _amount)

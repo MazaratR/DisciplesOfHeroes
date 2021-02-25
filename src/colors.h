@@ -14,11 +14,11 @@ enum class Color : std::uint8_t
     Black
 };
 
-#define COLOR_WHITE 0xe6e6e6
-#define COLOR_BLUE 0x2f2cdb
-#define COLOR_GREEN 0x2cdb38
-#define COLOR_YELLOW 0xc7db2c
-#define COLOR_BLACK 0x000000
+constexpr const int32_t COLOR_WHITE     = 0xe6e6e6;
+constexpr const int32_t COLOR_BLUE      = 0x2f2cdb;
+constexpr const int32_t COLOR_GREEN     = 0x2cdb38;
+constexpr const int32_t COLOR_YELLOW    = 0xc7db2c;
+constexpr const int32_t COLOR_BLACK     = 0x000000;
 
 constexpr const char* COLOR_WHITE_TEXT  = "Pure White";
 constexpr const char* COLOR_BLUE_TEXT   = "Noble Blue";
@@ -57,7 +57,7 @@ inline Color colorFromText(const std::string& _color)
 
 }
 
-inline int colorToHexValue(Color _color)
+inline int32_t colorToHexValue(Color _color)
 {
     switch (_color)
     {

@@ -39,7 +39,7 @@ class UserInterface
 
 public:
     UserInterface(std::shared_ptr<IMapManager> _manager = nullptr);
-    ~UserInterface();
+    ~UserInterface() = default;
     void resizeEvent(QResizeEvent* _event) override;
     bool eventFilter(QObject* _object, QEvent* _event) override;
     void keyPressEvent(QKeyEvent* _keyevent) override;
@@ -107,7 +107,7 @@ private slots:
 
 
 private:
-    Ui::UserInterface *ui;
+    std::shared_ptr<Ui::UserInterface> m_ui;
     std::shared_ptr<IGameLogic> m_gameLogic;
     std::shared_ptr<IMapManager> m_mapManager;
     std::shared_ptr<IPlayersManager> m_playersManager;
