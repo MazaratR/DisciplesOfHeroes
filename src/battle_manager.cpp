@@ -154,7 +154,7 @@ void BattleManager::sortUnitsQueue(BattleQueueSharedVec &_vec)
         const auto firstUnit = _first->unit.lock();
         const auto secondUnit = _second->unit.lock();
 
-        // If both units are dead, dosen't matter
+        // If both units are dead, doesn't matter
         if (!firstUnit->partySize() && !secondUnit->partySize())
             return &_first > &_second;
 
